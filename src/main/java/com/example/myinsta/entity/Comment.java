@@ -35,7 +35,6 @@ public class Comment {
     @JoinColumn(nullable = false)
     private User author;
 
-
     @Column(columnDefinition = "text", nullable = false)
     private String message;
 
