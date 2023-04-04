@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -53,7 +54,7 @@ public class Post {
             mappedBy = "post"
     )
     @ToString.Exclude
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
     @Timestamp
     @Column(nullable = false, updatable = false)
