@@ -6,7 +6,7 @@ spring:
     problemdetails:
       enabled: true
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/my_insta?autoReconnect=true&useSSL=false
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/my_insta
     username: user
     password: password
   jpa:

@@ -1,7 +1,6 @@
 package com.example.myinsta.security;
 
-import com.example.myinsta.entity.User;
-import com.example.myinsta.exceptions.JwtServiceException;
+import com.example.myinsta.model.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.InvalidKeyException;
@@ -19,7 +18,7 @@ import static com.example.myinsta.security.SecurityConstants.SECRET;
 
 @Slf4j
 @Component
-public class JwtService {
+public class JWTService {
 
     public String generateToken(User user) {
         Map<String, Object> claimsMap = getExtraClaimsFor(user);
@@ -88,9 +87,7 @@ public class JwtService {
     }
 
     public Long extractUserId(String token) {
-        return extractClaim(token,
-                claims -> claims.get("userId", Long.class)
-        );
+        return Long.parseLong(extractSubject(token));
     }
 
 }

@@ -1,7 +1,7 @@
 package com.example.myinsta.config;
 
 import com.example.myinsta.repository.UserRepository;
-import com.example.myinsta.security.JwtAuthenticationFilter;
+import com.example.myinsta.security.JWTAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +30,7 @@ public class SecurityConfig {
     @Autowired
     AuthenticationEntryPoint authenticationEntryPoint;
     @Autowired
-    JwtAuthenticationFilter jwtAuthenticationFilter;
+    JWTAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
     UserRepository userRepo;
 
@@ -41,10 +41,10 @@ public class SecurityConfig {
                         .requestMatchers(SIGN_UP_URLS).permitAll()
                         .anyRequest().authenticated())
                 .csrf().disable()
-                .cors().disable()
-                .exceptionHandling(handler -> handler
-                        .authenticationEntryPoint(authenticationEntryPoint)
-                )
+                //TODO read more about entry points
+//                .exceptionHandling(handler -> handler
+//                        .authenticationEntryPoint(authenticationEntryPoint)
+//                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

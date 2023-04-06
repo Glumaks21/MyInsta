@@ -1,4 +1,4 @@
-package com.example.myinsta.exceptions;
+package com.example.myinsta.exception;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

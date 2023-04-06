@@ -1,6 +1,6 @@
 package com.example.myinsta.repository;
 
-import com.example.myinsta.entity.User;
+import com.example.myinsta.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

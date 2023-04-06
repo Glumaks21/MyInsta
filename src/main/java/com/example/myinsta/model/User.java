@@ -1,13 +1,10 @@
-package com.example.myinsta.entity;
+package com.example.myinsta.model;
 
-import com.example.myinsta.entity.enums.Role;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.example.myinsta.model.enums.Role;
 import jakarta.persistence.*;
-import jdk.jfr.Timestamp;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -59,20 +56,17 @@ public class User implements UserDetails {
 
     @ElementCollection(
             fetch = FetchType.EAGER,
-            targetClass = Role.class
-    )
+            targetClass = Role.class)
     @CollectionTable(
             name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id")
-    )
+            joinColumns = @JoinColumn(name = "user_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
     @ToString.Exclude
     private Set<Post> posts = new HashSet<>();
 
     @CreationTimestamp
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(nullable = false, updatable = false)
     private LocalDateTime creationTime;
 
@@ -90,16 +84,16 @@ public class User implements UserDetails {
         return getClass().hashCode();
     }
 
+    /**
+     *SECURITY
+     */
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toSet());
     }
-
-    /**
-     *SECURITY
-     */
 
     @Override
     public boolean isAccountNonExpired() {

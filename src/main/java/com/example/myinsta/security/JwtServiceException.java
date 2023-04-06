@@ -1,4 +1,4 @@
-package com.example.myinsta.exceptions;
+package com.example.myinsta.security;
 
 public class JwtServiceException extends RuntimeException {
 

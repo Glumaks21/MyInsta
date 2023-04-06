@@ -1,13 +1,16 @@
 package com.example.myinsta.service;
 
 
-import com.example.myinsta.entity.User;
+import com.example.myinsta.dto.UserDTO;
+import com.example.myinsta.model.User;
 import com.example.myinsta.payload.request.LoginRequest;
 import com.example.myinsta.payload.request.SignupRequest;
-import com.example.myinsta.security.JwtResponse;
+import com.example.myinsta.security.JWTResponse;
 
 public interface UserService {
-    User findById(Long id);
+    UserDTO findById(Long id);
     User register(SignupRequest request);
-    JwtResponse login(LoginRequest request);
+    JWTResponse login(LoginRequest request);
+    UserDTO update(Long userId, UserDTO userDto);
+    User getAuthenticatedUser();
 }

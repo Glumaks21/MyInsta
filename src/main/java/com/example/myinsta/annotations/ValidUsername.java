@@ -1,6 +1,6 @@
 package com.example.myinsta.annotations;
 
-import com.example.myinsta.validators.PasswordValidator;
+import com.example.myinsta.validators.UsernameValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -9,11 +9,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = PasswordValidator.class)
-public @interface ValidPassword {
-    String message() default "Invalid password format";
+@Constraint(validatedBy = UsernameValidator.class)
+public @interface ValidUsername {
+    String message() default "Invalid username format";
     Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default{};
 }

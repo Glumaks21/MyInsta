@@ -1,17 +1,12 @@
 package com.example.myinsta.validators;
 
-import com.example.myinsta.exceptions.ObjectNotValidException;
+import com.example.myinsta.exception.ObjectNotValidException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,13 +26,20 @@ public class ObjectsValidator {
 
     public <T> void validate(T objectToValidate) {
         Set<ConstraintViolation<T>> violations = validator.validate(objectToValidate);
+        throwIfViolated(violations);
+    }
+
+    private <T> void throwIfViolated(Set<ConstraintViolation<T>> violations) {
         if (!violations.isEmpty()) {
-            var errorMessages = violations.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .collect(Collectors.toSet());
+            var errorMessages = getErrorMessages(violations);
             throw new ObjectNotValidException(errorMessages);
         }
     }
 
+    private <T> Set<String> getErrorMessages(Set<ConstraintViolation<T>> violations) {
+        return violations.stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.toSet());
+    }
 
 }

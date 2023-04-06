@@ -6,14 +6,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record LoginRequest(
-        @NotNull(message = "{username.not-null}")
-        @NotBlank(message = "{username.not-blank}")
-        @Size(min = 6, max = 20, message = "{username.size}")
+        @NotNull(message = "{user.username.not-null}")
+        @NotBlank(message = "{user.username.not-blank}")
+        @Size(min = 6, max = 20, message = "{user.username.size}")
         String username,
 
-        @NotNull(message = "{password.not-null}")
-        @Size(min = 9, max = 20, message = "{password.size}")
-        @ValidPassword(message = "{password.valid-password}")
+        @NotNull(message = "{user.password.not-null}")
+        @Size(min = 9, max = 20, message = "{user.password.size}")
+        @ValidPassword(message = "{user.password.valid-password}")
         String password
 ) {
 }

@@ -5,30 +5,31 @@ import com.example.myinsta.annotations.ValidEmail;
 import com.example.myinsta.annotations.ValidPassword;
 import jakarta.validation.constraints.*;
 
-@PasswordMatches(message = "{password-confirmation}")
+@PasswordMatches
 public record SignupRequest(
-        @NotNull(message = "{name.not-null}")
-        @NotBlank(message = "{name.not-blank}")
-        @Size(min = 2, max = 30, message = "{name.size}")
+
+        @NotNull
+        @NotBlank
+        @Size(min = 2, max = 30)
         String name,
 
-        @NotNull(message = "{surname.not-null}")
-        @NotBlank(message = "{surname.not-blank}")
-        @Size(min = 2, max = 30, message = "{surname.size}")
+        @NotNull
+        @NotBlank
+        @Size(min = 2, max = 30)
         String surname,
 
-        @NotNull(message = "{email.not-null}")
-        @ValidEmail(message = "{email.valid-email}")
+        @NotNull
+        @ValidEmail
         String email,
 
-        @NotNull(message = "{username.not-null}")
-        @NotBlank(message = "{username.not-blank}")
-        @Size(min = 6, max = 20, message = "{username.size}")
+        @NotNull
+        @NotBlank
+        @Size(min = 6, max = 20)
         String username,
 
-        @NotNull(message = "{password.not-null}")
-        @ValidPassword(message = "{password.valid-password}")
-        @Size(min = 9, max = 20, message = "{password.size}")
+        @NotNull
+        @ValidPassword
+        @Size(min = 9, max = 20)
         String password,
 
         String passwordConfirmation

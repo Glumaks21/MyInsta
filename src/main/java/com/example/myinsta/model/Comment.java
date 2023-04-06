@@ -1,11 +1,9 @@
-package com.example.myinsta.entity;
+package com.example.myinsta.model;
 
 import jakarta.persistence.*;
-import jdk.jfr.Timestamp;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -13,32 +11,33 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Comment {
 
     @Id
     @SequenceGenerator(
             name = "comment_id_sequence",
-            sequenceName = "comment_id_sequence"
-    )
+            sequenceName = "comment_id_sequence")
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "comment_id_sequence"
-    )
+            generator = "comment_id_sequence")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, updatable = false)
     private Post post;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, updatable = false)
     private User author;
 
     @Column(columnDefinition = "text", nullable = false)
     private String message;
 
-    @Timestamp
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime creationDate;
 

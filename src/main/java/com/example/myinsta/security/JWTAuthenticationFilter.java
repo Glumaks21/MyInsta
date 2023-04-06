@@ -1,15 +1,13 @@
 package com.example.myinsta.security;
 
-import com.example.myinsta.entity.User;
-import com.example.myinsta.service.UserService;
+import com.example.myinsta.model.User;
+import com.example.myinsta.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -21,16 +19,11 @@ import java.io.IOException;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
-    private  UserService userService;
+    private final JWTService jwtService;
+    private final UserRepository userRepo;
 
-    @Lazy
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -62,9 +55,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Long userId = jwtService.extractUserId(jwt);
 
         if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            User user = userService.findById(userId);
+            User user = userRepo.findById(userId).orElse(null);
 
-            if (jwtService.isValid(jwt, user)) {
+            if (user != null && jwtService.isValid(jwt, user)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         user, null, user.getAuthorities()
                 );

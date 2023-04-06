@@ -1,9 +1,9 @@
-package com.example.myinsta.entity;
+package com.example.myinsta.model;
 
 import jakarta.persistence.*;
-import jdk.jfr.Timestamp;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -36,17 +36,16 @@ public class Post {
     @Column(columnDefinition = "text", nullable = false, length = 4096)
     private String body;
 
+    @Column(length = 255)
     private String location;
-
-    private Integer likes;
 
     @ManyToMany
     @ToString.Exclude
     private Set<User> likedUsers;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private User owner;
+    @JoinColumn(updatable = false, nullable = false)
+    private User author;
 
     @OneToMany(
             cascade = CascadeType.ALL,
@@ -56,7 +55,7 @@ public class Post {
     @ToString.Exclude
     private Set<Comment> comments = new HashSet<>();
 
-    @Timestamp
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime creationTime;
 
