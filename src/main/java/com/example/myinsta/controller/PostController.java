@@ -49,12 +49,9 @@ public class PostController {
     }
 
     @PutMapping(path = "{id}", consumes = APPLICATION_JSON_VALUE)
-    ResponseEntity<PostDTO> edit(@PathVariable Long id, @RequestBody PostDTO postDTO) {
-        log.info("Update the post: {}", postDTO);
-        PostDTO post = postService.editPost(id, postDTO);
-        return ResponseEntity
-                .status(CREATED)
-                .body(post);
+    ResponseEntity<PostDTO> edit(@PathVariable Long id, @RequestBody PostDTO changed) {
+        log.info("Update the post: {}", changed);
+        return ResponseEntity.ok(postService.editPost(id, changed));
     }
 
     @DeleteMapping("{id}")

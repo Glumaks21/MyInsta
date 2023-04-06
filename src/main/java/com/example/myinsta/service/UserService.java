@@ -12,5 +12,5 @@ public interface UserService {
     User register(SignupRequest request);
     JWTResponse login(LoginRequest request);
     UserDTO update(Long userId, UserDTO userDto);
-    User getAuthenticatedUser();
+    UserDTO currentUser();
 }

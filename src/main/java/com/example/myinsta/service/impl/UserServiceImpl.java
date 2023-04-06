@@ -2,12 +2,12 @@ package com.example.myinsta.service.impl;
 
 import com.example.myinsta.dto.UserDTO;
 import com.example.myinsta.dto.converter.UserDTOConvertor;
-import com.example.myinsta.exception.ResourceForbiddenException;
-import com.example.myinsta.model.User;
-import com.example.myinsta.model.enums.Role;
 import com.example.myinsta.exception.ObjectNotValidException;
+import com.example.myinsta.exception.ResourceForbiddenException;
 import com.example.myinsta.exception.ResourceNotFoundException;
 import com.example.myinsta.exception.UserServiceException;
+import com.example.myinsta.model.User;
+import com.example.myinsta.model.enums.Role;
 import com.example.myinsta.payload.request.LoginRequest;
 import com.example.myinsta.payload.request.SignupRequest;
 import com.example.myinsta.repository.UserRepository;
@@ -19,12 +19,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+
+import static com.example.myinsta.util.SecurityUtil.getAuthenticatedUser;
 
 @Slf4j
 @Service
@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final JWTService jwtService;
     private final ObjectsValidator validator;
     private final UserDTOConvertor convertor;
+
 
     @Override
     public UserDTO findById(Long id) {
@@ -80,15 +81,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            User user = (User) authentication.getPrincipal();
-            return userRepo.findById(user.getId()).orElse(null);
-        }
-        return null;
+    public UserDTO currentUser() {
+        return convertor.apply(getAuthenticatedUser());
     }
 
     @Override

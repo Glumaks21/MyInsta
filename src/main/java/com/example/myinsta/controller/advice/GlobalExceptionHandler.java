@@ -3,12 +3,12 @@ package com.example.myinsta.controller.advice;
 import com.example.myinsta.exception.ObjectNotValidException;
 import com.example.myinsta.exception.ResourceForbiddenException;
 import com.example.myinsta.exception.ResourceNotFoundException;
+import com.example.myinsta.exception.UserNotAuthenticatedException;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -28,6 +28,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     ProblemDetail handleResourceForbiddenException(ResourceForbiddenException ex) {
+        return ProblemDetail.forStatusAndDetail(FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler
+    ProblemDetail handleUserNotAuthenticatedException(UserNotAuthenticatedException ex) {
         return ProblemDetail.forStatusAndDetail(UNAUTHORIZED, ex.getMessage());
     }
 

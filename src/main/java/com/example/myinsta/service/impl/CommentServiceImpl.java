@@ -12,12 +12,15 @@ import com.example.myinsta.repository.CommentRepository;
 import com.example.myinsta.repository.PostRepository;
 import com.example.myinsta.service.CommentService;
 import com.example.myinsta.service.UserService;
+import com.example.myinsta.util.SecurityUtil;
 import com.example.myinsta.validators.ObjectsValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import static com.example.myinsta.util.SecurityUtil.getAuthenticatedUser;
 
 @Slf4j
 @Service
@@ -49,7 +52,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment createComment(CommentCreationDTO commentDTO) {
         validator.validate(commentDTO);
 
-        User user = getCurrentUserOrThrow();
+        User user = getAuthenticatedUser();
         Post post = postRepo.findById(commentDTO.postId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Post with id " + commentDTO.postId() + " wasn't found")
@@ -69,7 +72,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentDTO updateComment(Long id, CommentDTO commentDTO) {
         validator.validate(commentDTO);
 
-        User user = getCurrentUserOrThrow();
+        User user = getAuthenticatedUser();
         Comment comment = getCommentByIdOrThrow(id);
 
         if (!user.equals(comment.getAuthor())) {
@@ -84,7 +87,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteCommentById(Long id) {
-        User user = getCurrentUserOrThrow();
+        User user = getAuthenticatedUser();
         Comment comment = getCommentByIdOrThrow(id);
 
         if (!user.equals(comment.getAuthor())) {
@@ -98,14 +101,6 @@ public class CommentServiceImpl implements CommentService {
     private Comment getCommentByIdOrThrow(Long id) {
         return commentRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment with id " + id + " wasn't found"));
-    }
-
-    private User getCurrentUserOrThrow() {
-        User user = userService.getAuthenticatedUser();
-        if (user == null) {
-            throw new ResourceForbiddenException("Authenticated user hasn't authorities");
-        }
-        return user;
     }
 
 }

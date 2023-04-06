@@ -36,6 +36,7 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getCommentById(id));
     }
 
+    @PreAuthorize("#commentDTO.author() == authentication.principal.username")
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
     ResponseEntity<String> create(@RequestBody CommentCreationDTO commentDTO) {
         log.info("Create the comment: {}", commentDTO);
@@ -47,9 +48,9 @@ public class CommentController {
 
     @PreAuthorize("#commentDTO.author() == authentication.principal.username")
     @PutMapping(value = "{id}", consumes = APPLICATION_JSON_VALUE)
-    ResponseEntity<CommentDTO> update(@PathVariable Long id, @RequestBody CommentDTO commentDTO) {
-        log.info("Update the comment: {}", commentDTO);
-        return ResponseEntity.ok(commentService.updateComment(id, commentDTO));
+    ResponseEntity<CommentDTO> update(@PathVariable Long id, @RequestBody CommentDTO changed) {
+        log.info("Update the comment: {}", changed);
+        return ResponseEntity.ok(commentService.updateComment(id, changed));
     }
 
     @DeleteMapping(value = "{id}")

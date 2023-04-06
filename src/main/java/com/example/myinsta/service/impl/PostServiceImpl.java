@@ -11,7 +11,6 @@ import com.example.myinsta.model.User;
 import com.example.myinsta.repository.ImageRepository;
 import com.example.myinsta.repository.PostRepository;
 import com.example.myinsta.service.PostService;
-import com.example.myinsta.service.UserService;
 import com.example.myinsta.validators.ObjectsValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.example.myinsta.util.SecurityUtil.getAuthenticatedUser;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -28,9 +29,9 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepo;
     private final ImageRepository imageRepo;
-    private final UserService userService;
     private final ObjectsValidator validator;
     private final PostDTOConverter converter;
+
 
     @Override
     public PostDTO getPostById(Long id) {
@@ -48,7 +49,7 @@ public class PostServiceImpl implements PostService {
     public Post createPost(PostCreationDTO postDTO) {
         validator.validate(postDTO);
 
-        User author = getCurrentUserOrThrow();
+        User author = getAuthenticatedUser();
         Post post = Post.builder()
                 .title(postDTO.title())
                 .body(postDTO.body())
@@ -69,7 +70,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<PostDTO> getUserPosts(Pageable pageable) {
-        User author = getCurrentUserOrThrow();
+        User author = getAuthenticatedUser();
         return postRepo
                 .findAllByAuthor(author, pageable)
                 .map(converter);
@@ -77,7 +78,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Integer likePostById(Long postId) {
-        User user = getCurrentUserOrThrow();
+        User user = getAuthenticatedUser();
         Post post = getPostByIdOrThrow(postId);
 
         post.getLikedUsers().add(user);
@@ -88,7 +89,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Integer unlikePostById(Long postId) {
-        User user = getCurrentUserOrThrow();
+        User user = getAuthenticatedUser();
         Post post = getPostByIdOrThrow(postId);
 
         post.getLikedUsers().remove(user);
@@ -101,7 +102,7 @@ public class PostServiceImpl implements PostService {
     public PostDTO editPost(Long id, PostDTO postDTO) {
         validator.validate(postDTO);
 
-        User user = getCurrentUserOrThrow();
+        User user = getAuthenticatedUser();
         Post post = getPostByIdOrThrow(id);
 
         if (!user.equals(post.getAuthor())) {
@@ -118,13 +119,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePostById(Long postId) {
-        User user = getCurrentUserOrThrow();
+        User user = getAuthenticatedUser();
         Post post = getPostByIdOrThrow(postId);
 
         if (user.equals(post.getAuthor())) {
             throw new ResourceForbiddenException("Authenticated user is not author of post");
         }
-
 
         log.debug("Deleting post from db: {}", post);
         postRepo.delete(post);
@@ -139,14 +139,6 @@ public class PostServiceImpl implements PostService {
     private Post getPostByIdOrThrow(Long id) {
        return postRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post with id " + id + " wasn't found"));
-    }
-
-    private User getCurrentUserOrThrow() {
-        User user = userService.getAuthenticatedUser();
-        if (user == null) {
-            throw new ResourceForbiddenException("Authenticated user hasn't authorities");
-        }
-        return user;
     }
 
 }
